@@ -19,10 +19,15 @@ import { CartService } from '../../core/services/cart.service';
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300"></div>
       </div>
       <div class="p-4">
-        <h3 class="text-lg font-gobold mb-2">{{ product.nombre }}</h3>
         
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-gobold mb-2">{{ product.nombre }}</h3>
+          <p class="text-alt text-sm mb-2 font-gobold" *ngIf="product.marca">{{ product.marca.marca }}
+          <span class="material-icons text-alt text-sm">check_circle</span>
+          </p>
+        </div>
+
         <p class="text-gray-600 text-sm mb-2 font-montserrat">{{ product.descripcion }}</p>
-        
         <div class="flex justify-between items-center">
           <span class="text-lg font-bold text-primary font-montserrat">{{ product.precio | currency }}</span>
           
