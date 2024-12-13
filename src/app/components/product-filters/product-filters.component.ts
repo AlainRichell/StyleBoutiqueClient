@@ -10,13 +10,13 @@ import { CategoryService } from '../../core/services/category.service';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="bg-white p-4 rounded-lg shadow-md">
-      <h3 class="text-lg font-gobold mb-4">Filtros</h3>
+      <h3 class="text-lg font-bold mb-4">Filtros</h3>
       
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2 font-montserrat">Categoría</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
         <select 
           (change)="onCategoryChange($event)"
-          class="w-full border rounded-md p-2 font-montserrat">
+          class="w-full border rounded-md p-2">
           <option value="">Todo</option>
           <option 
             *ngFor="let category of categories$ | async"
@@ -25,11 +25,26 @@ import { CategoryService } from '../../core/services/category.service';
           </option>
         </select>
       </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Marca</label>
+        <select 
+          (change)="onBrandChange($event)"
+          class="w-full border rounded-md p-2">
+          <option value="">Todo</option>
+          <option 
+            *ngFor="let brand of brands$ | async"
+            [value]="brand.idmarca">
+            {{ brand.marca }}
+          </option>
+        </select>
+      </div>
     </div>
   `
 })
 export class ProductFiltersComponent implements OnInit {
   categories$ = this.categoryService.getCategories();
+  brands$ = this.productService.getBrands(); // Nuevo observable para las marcas
 
   constructor(
     private productService: ProductService,
@@ -42,5 +57,11 @@ export class ProductFiltersComponent implements OnInit {
     const select = event.target as HTMLSelectElement;
     const categoryId = select.value ? parseInt(select.value, 10) : null;
     this.productService.setCategoryFilter(categoryId);
+  }
+
+  onBrandChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const brandId = select.value ? parseInt(select.value, 10) : null;
+    this.productService.setBrandFilter(brandId); // Método para actualizar el filtro por marca
   }
 }

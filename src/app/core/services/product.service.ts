@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { Product } from '../models/product.model';
+import { Marca } from '../models/product.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -10,6 +11,7 @@ import { ApiService } from './api.service';
 export class ProductService {
   private products$ = new BehaviorSubject<Product[]>([]);
   private categoryFilter$ = new BehaviorSubject<number | null>(null);
+  private brandFilter$ = new BehaviorSubject<number | null>(null); // Nuevo filtro
   private searchFilter$ = new BehaviorSubject<string>('');
   private loading$ = new BehaviorSubject<boolean>(false);
   private displayCount$ = new BehaviorSubject<number>(20);
@@ -37,19 +39,22 @@ export class ProductService {
     return combineLatest([
       this.products$,
       this.categoryFilter$,
+      this.brandFilter$, // Incluimos el filtro por marca
       this.searchFilter$
     ]).pipe(
-      map(([products, category, search]) => {
+      map(([products, category, brand, search]) => {
         return products.filter(product => {
           if (product.cantidad === 0) return false;
-          
+
           const matchesCategory = !category || 
             product.categorias.some(cat => cat.idcategoria === category);
+          const matchesBrand = !brand || 
+            (product.marca && product.marca.idmarca === brand);
           const searchTerm = search.toLowerCase().trim();
           const matchesSearch = !searchTerm || 
             product.nombre.toLowerCase().includes(searchTerm) ||
             product.descripcion?.toLowerCase().includes(searchTerm);
-          return matchesCategory && matchesSearch;
+          return matchesCategory && matchesBrand && matchesSearch;
         });
       })
     );
@@ -62,6 +67,10 @@ export class ProductService {
     ]).pipe(
       map(([products, count]) => products.slice(0, count))
     );
+  }
+
+  getBrands(): Observable<Marca[]> {
+    return this.apiService.getBrands();
   }
 
   hasMoreProducts(): Observable<boolean> {
@@ -88,6 +97,11 @@ export class ProductService {
 
   setCategoryFilter(categoryId: number | null) {
     this.categoryFilter$.next(categoryId);
+    this.resetDisplayCount();
+  }
+
+  setBrandFilter(brandId: number | null) {
+    this.brandFilter$.next(brandId);
     this.resetDisplayCount();
   }
 
