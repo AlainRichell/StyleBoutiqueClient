@@ -26,6 +26,8 @@
             }
           },
           "options": {
+            "baseHref": "/",
+            "deployUrl": "/",
             "assets": [
               "src/assets/"
             ],
