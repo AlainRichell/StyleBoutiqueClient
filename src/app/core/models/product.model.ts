@@ -9,6 +9,7 @@ export interface Product {
   cantidad: number;
   imagenes: ProductImage[];
   marca: Marca | null;
+  talla: Talla[];
 }
 
 export interface ProductImage {
@@ -20,4 +21,9 @@ export interface ProductImage {
 export interface Marca {
   idmarca: number;
   marca: string;
+}
+
+export interface Talla {
+  idtalla: number;
+  talla: string;
 }

@@ -14,8 +14,7 @@ import { QuantityControlComponent } from '../../shared/components/quantity-contr
       [class.hidden]="!isOpen"
       (click)="close()">
     </div>
-    <div 
-      class="fixed inset-y-0 right-0 w-96 bg-white shadow-lg transform transition-transform duration-300 z-50"
+    <div class="fixed inset-y-0 right-0 w-96 max-w-full sm:w-80 md:w-96 bg-white shadow-lg transform transition-transform duration-300 z-50"
       [class.translate-x-0]="isOpen"
       [class.translate-x-full]="!isOpen">
       <div class="h-full flex flex-col">

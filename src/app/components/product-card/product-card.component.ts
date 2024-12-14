@@ -28,6 +28,18 @@ import { CartService } from '../../core/services/cart.service';
         </div>
 
         <p class="text-gray-600 text-sm mb-2 font-montserrat">{{ product.descripcion }}</p>
+
+        <div *ngIf="product.talla.length > 0" class="mb-2">
+          <label class="block text-sm  text-gray-700 mb-1 font-gobold">Tallas disponibles:</label>
+          <div class="flex flex-wrap gap-2">
+            <span 
+              *ngFor="let talla of product.talla" 
+              class="px-2 py-1 border border-gray-300 rounded text-sm">
+              {{ talla.talla }}
+            </span>
+          </div>
+        </div>
+
         <div class="flex justify-between items-center">
           <span class="text-lg font-bold text-primary font-montserrat">{{ product.precio | currency }}</span>
           
