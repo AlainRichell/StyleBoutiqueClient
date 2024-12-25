@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../core/services/category.service';
 import { ProductService } from '../../core/services/product.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -41,7 +42,9 @@ import { ProductService } from '../../core/services/product.service';
   `
 })
 export class HomeComponent {
-  categories$ = this.categoryService.getCategories();
+  categories$ = this.categoryService.getCategories().pipe(
+    map(categories => categories.slice(0, 4)) // Limitar a 4 categorías
+  );
   
   constructor(
     private categoryService: CategoryService,
@@ -50,8 +53,7 @@ export class HomeComponent {
   ) {}
 
   getCategoryImage(category: any): string {
-    // You should implement a proper mapping of category images
-    return `assets/categorias/${category.categoria.toLowerCase()}.jpg`;
+    return category.imagenes && category.imagenes.length > 0 ? category.imagenes[0].imagen : "Sin imagen";
   }
 
   navigateToCategory(categoryId: number) {
