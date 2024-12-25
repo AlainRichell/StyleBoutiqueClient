@@ -10,60 +10,71 @@ import { CartService } from '../../core/services/cart.service';
   imports: [CommonModule],
   template: `
     <div class="bg-white rounded-lg shadow-md overflow-hidden group relative">
-      <div class="relative">
-        <img 
-          [src]="getMainImage()" 
-          [alt]="product.nombre" 
-          class="w-full h-48 object-cover"
-          (error)="onImageError($event)">
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300"></div>
-      </div>
-      <div class="p-4">
-        
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-gobold mb-2">{{ product.nombre }}</h3>
-          <p class="text-alt text-sm mb-2 font-gobold" *ngIf="product.marca">{{ product.marca.marca }}
-          <span class="material-icons text-alt text-sm">check_circle</span>
-          </p>
-        </div>
+  <div class="relative">
+    <img 
+      [src]="getMainImage()" 
+      [alt]="product.nombre" 
+      class="w-full h-48 object-cover"
+      (error)="onImageError($event)">
+    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300"></div>
+  </div>
+  <div class="p-4">
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-gobold mb-2">{{ product.nombre }}</h3>
+      <p class="text-alt text-sm mb-2 font-gobold" *ngIf="product.marca">{{ product.marca.marca }}
+        <span class="material-icons text-alt text-sm">check_circle</span>
+      </p>
+    </div>
 
-        <p class="text-gray-600 text-sm mb-2 font-montserrat">{{ product.descripcion }}</p>
-
-        <div *ngIf="product.talla.length > 0" class="mb-2">
-          <label class="block text-sm  text-gray-700 mb-1 font-gobold">Tallas disponibles:</label>
-          <div class="flex flex-wrap gap-2">
-            <span 
-              *ngFor="let talla of product.talla" 
-              class="px-2 py-1 border border-gray-300 rounded text-sm">
-              {{ talla.talla }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-lg font-bold text-primary font-montserrat">{{ product.precio | currency }}</span>
-          
-          <button 
-            (click)="addToCart()"
-            [disabled]="product.cantidad === 0"
-            class="btn btn-primary text-sm font-montserrat"
-            [class.opacity-50]="product.cantidad === 0">
-            {{ product.cantidad === 0 ? 'Agotado' : 'Añadir' }}
-          </button>
-        </div>
-      </div>
+    <!-- Descripción con funcionalidad de expansión -->
+    <div 
+      class="relative"
+      [ngClass]="{ 'h-12 overflow-hidden': !isDescriptionExpanded }"
+      (click)="toggleDescription()"
+    >
+      <p class="text-gray-600 text-sm mb-2 font-montserrat cursor-pointer">{{ product.descripcion }}</p>
       <div 
-        *ngIf="showAddedNotification"
-        class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm animate-fade-out font-montserrat">
-        ¡Añadido al carrito!
+        *ngIf="!isDescriptionExpanded"
+        class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white pointer-events-none">
       </div>
     </div>
+
+    <div *ngIf="product.talla.length > 0" class="mb-2">
+      <label class="block text-sm text-gray-700 mb-1 font-gobold">Tallas disponibles:</label>
+      <div class="flex flex-wrap gap-2">
+        <span 
+          *ngFor="let talla of product.talla" 
+          class="px-2 py-1 border border-gray-300 rounded text-sm">
+          {{ talla.talla }}
+        </span>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-lg font-bold text-primary font-montserrat">{{ product.precio | currency }}</span>
+      <button 
+        (click)="addToCart()"
+        [disabled]="product.cantidad === 0"
+        class="btn btn-primary text-sm font-montserrat"
+        [class.opacity-50]="product.cantidad === 0">
+        {{ product.cantidad === 0 ? 'Agotado' : 'Añadir' }}
+      </button>
+    </div>
+  </div>
+  <div 
+    *ngIf="showAddedNotification"
+    class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm animate-fade-out font-montserrat">
+    ¡Añadido al carrito!
+  </div>
+</div>
+
   `
 })
 export class ProductCardComponent {
   @Input() product!: Product;
   showAddedNotification = false;
   private fallbackImage = 'assets/images/placeholder.jpg';
+  isDescriptionExpanded = false;
 
   constructor(private cartService: CartService) {}
 
@@ -71,6 +82,10 @@ export class ProductCardComponent {
     return this.product.imagenes?.length > 0 
       ? this.product.imagenes[0].imagen 
       : this.fallbackImage;
+  }
+
+  toggleDescription() {
+    this.isDescriptionExpanded = !this.isDescriptionExpanded;
   }
 
   onImageError(event: any) {
