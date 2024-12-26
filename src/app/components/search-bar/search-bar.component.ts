@@ -16,6 +16,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
         type="text"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange($event)"
+        (keyup.enter)="onSearch()"
         placeholder="Buscar productos..."
         class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/50">
       <button
